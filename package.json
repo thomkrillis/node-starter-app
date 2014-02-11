@@ -1,0 +1,11 @@
+{
+  "name": "node-auth",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "~3.4.8",
+    "jade": ">= 0.0.1",
+    "mongoose": ">= 2.6.5",
+    "nodeunit": ">=0.0.1"
+  }
+}
