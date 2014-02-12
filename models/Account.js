@@ -19,11 +19,19 @@ module.exports = function(config, mongoose, nodemailer) {
     if(err) {
       return console.log(err);
     };
-    
     return console.log('Account Creation Successful!');
   };
 
-  // Change Password - Sends email to user if forgotten
+  var changePassword = function(accountId, newpassword) {
+    var shaSum = crypto.createHash('sha256');
+    shaSum.update(newpassword);
+    var hashedPassword = shaSum.digest('hex');
+    Account.update({_id:accountId}, {$set: {password:hashedPassword}}, {upsert:false}, 
+                    function changePasswordCallback(err) {
+                      console.log('changed password for ' + accountId);
+                    });
+  };
+
   var forgotPassword = function(email, resetPasswordUrl, callback) {
     var user = Account.findOne({email: email}, function findAccount(err, doc) {
       // Not a valid user
@@ -49,7 +57,7 @@ module.exports = function(config, mongoose, nodemailer) {
     });
   };
 
-  // Login **Salt it yourself, suckers!
+    // Login **Salt it yourself, suckers!
   var login = function(email, password, callback) {
     var shaSum = crypto.createHash('sha256');
     shaSum.update(password);
