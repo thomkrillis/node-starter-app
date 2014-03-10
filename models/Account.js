@@ -1,7 +1,15 @@
 module.exports = function(config, mongoose, nodemailer) {
   var crypto = require('crypto');
 
-  // Instantiate account schema
+  var schemaOptions = {
+    toJSON : {
+      virtuals : true
+    },
+    toObject : {
+      virtuals : true
+    }
+  };
+
   var AccountSchema = new mongoose.Schema({
     email:    { type: String, unique: true },
     password: { type: String },
@@ -42,7 +50,7 @@ module.exports = function(config, mongoose, nodemailer) {
         var smtpTransport = nodemailer.createTransport('SMTP', config.mail);
         resetPasswordUrl += '?account=' + doc._id;
         smtpTransport.sendMail({
-          from: 'accounts@thehackerati.com',  // Change this to your own email
+          from: 'admin@company.com',  // Change this to your own email
           to: doc.email,
           subject: 'Application Password Reset',
           text: 'Click here to reset your password: ' + resetPasswordUrl
@@ -57,7 +65,7 @@ module.exports = function(config, mongoose, nodemailer) {
     });
   };
 
-    // Login **Salt it yourself, suckers!
+  // Login **Salt it yourself, suckers!
   var login = function(email, password, callback) {
     var shaSum = crypto.createHash('sha256');
     shaSum.update(password);

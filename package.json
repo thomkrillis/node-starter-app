@@ -1,5 +1,5 @@
 {
-  "name": "node-auth",
+  "name": "node-starter-app",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -7,7 +7,6 @@
     "jade": ">= 0.0.1",
     "mongoose": ">= 2.6.5",
     "nodemailer": ">= 0.3.20",
-    "connect": ">= 1.9.1",
-    "nodeunit": ">=0.0.1"
+    "connect": ">= 1.9.1"
   }
 }
