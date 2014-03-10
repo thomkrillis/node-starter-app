@@ -1,6 +1,6 @@
 define(['views/index', 'views/register', 'views/login', 'views/forgotpassword'],
        function(IndexView, RegisterView, LoginView, ForgotPasswordView) {
-  var NodeAuthRouter = Backbone.Router.extend({
+  var NodeStarterAppRouter = Backbone.Router.extend({
     currentView: null,
 
     routes: {
@@ -35,6 +35,6 @@ define(['views/index', 'views/register', 'views/login', 'views/forgotpassword'],
     }
   });
 
-  return new NodeAuthRouter();
+  return new NodeStarterAppRouter();
 });
 
