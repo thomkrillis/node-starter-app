@@ -18,9 +18,14 @@ app.configure(function(){
   app.use(express.limit('1mb'));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
+  app.use(express.json());
+  app.use(express.urlencoded());
+  app.use(app.router);
   app.use(express.session({secret: "secret key", store: new MemoryStore()}));
   mongoose.connect('mongodb://localhost/nodestarterapp');
 });
+
+app.use(express.bodyParser());
 
 app.get('/', function(req, res) {
   res.render('index.jade');
@@ -33,18 +38,18 @@ app.post('/login', function(req, res) {
 
   if ( null == email || email.length < 1
       || null == password || password.length < 1 ) {
-    res.send(400);
+    res.json(400, {"message":"Bad request"});
     return;
   }
 
   Account.login(email, password, function(success) {
     if ( !success ) {
-      res.send(401);
+      res.json(402, {"message":"user does not exist"});
       return;
     }
     console.log('login was successful');
-    req.session.loggedIn = true;
-  res.send(200);
+    //req.session.loggedIn = true;
+  res.json(200, {"message":"OK"});
   });
 });
 
@@ -57,12 +62,12 @@ app.post('/register', function(req, res) {
 
   if ( null == email || email.length < 1
        || null == password || password.length < 1 ) {
-    res.send(400);
+    res.json(400, {"message":"Bad request"});
     return;
   }
 
   Account.register(email, password, firstName, lastName, nickName);
-  res.send(200);
+  res.json(200, {"message":"OK"});
 });
 
 app.get('/account/authenticated', function(req, res) {
@@ -84,10 +89,10 @@ app.post('/forgotpassword', function(req, res) {
 
   Account.forgotPassword(email, resetPasswordUrl, function(success){
     if (success) {
-      res.send(200);
+      res.json(200, {"message":"OK"});
     } else {
       // Username or password not found
-      res.send(404);
+      res.json(404, {"message":"user doesn't exist"});
     }
   });
 });
