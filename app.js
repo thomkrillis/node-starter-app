@@ -1,115 +1,33 @@
-var express = require("express");
-var app = express();
-var nodemailer = require('nodemailer');
-var MemoryStore = require('connect').session.MemoryStore;
+var express = require('express'),
+    app = express(),
+    secrets = require('./config/secrets.js'),
+    port = secrets.port,
+    http = require('http'),
+    mongoose = require('mongoose'),
+    path = require('path'),
+    passport = require('passport'),
+    flash = require('connect-flash');
 
-// Data layer
-var mongoose = require('mongoose');
-var config = {
-  mail: require('./config/mail')
-};
+mongoose.connect(secrets.db);
 
-// Accounts
-var Account = require('./models/Account')(config, mongoose, nodemailer)
+require('./lib/passport')(passport);
 
-app.configure(function(){
-  app.set('view engine', 'jade');
-  app.use(express.static(__dirname + '/public'));
-  app.use(express.limit('1mb'));
-  app.use(express.bodyParser());
+app.configure(function() {
+  app.use(express.logger('dev'));
   app.use(express.cookieParser());
+  app.use(express.bodyParser());
+  app.use(express.session({ secret: secrets.sessionSecret }));
   app.use(express.json());
-  app.use(express.urlencoded());
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.set('view engine', 'ejs');
+  app.use(flash());
   app.use(app.router);
-  app.use(express.session({secret: "secret key", store: new MemoryStore()}));
-  mongoose.connect('mongodb://localhost/nodestarterapp');
 });
 
-app.use(express.bodyParser());
+require('./app/routes/api')(app, passport);
+require('./app/routes/client')(app, passport);
+//require('./app/routes/oAuth')(app, passport);
 
-app.get('/', function(req, res) {
-  res.render('index.jade');
-});
-
-app.post('/login', function(req, res) {
-  console.log('login request');
-  var email = req.param('email', null);
-  var password = req.param('password', null);
-
-  if ( null == email || email.length < 1
-      || null == password || password.length < 1 ) {
-    res.json(400, {"message":"Bad request"});
-    return;
-  }
-
-  Account.login(email, password, function(success) {
-    if ( !success ) {
-      res.json(402, {"message":"user does not exist"});
-      return;
-    }
-    console.log('login was successful');
-    //req.session.loggedIn = true;
-  res.json(200, {"message":"OK"});
-  });
-});
-
-app.post('/register', function(req, res) {
-  var firstName = req.param('firstName', '');
-  var lastName = req.param('lastName', '');
-  var nickName = req.param('nickName', '');
-  var email = req.param('email', null);
-  var password = req.param('password', null);
-
-  if ( null == email || email.length < 1
-       || null == password || password.length < 1 ) {
-    res.json(400, {"message":"Bad request"});
-    return;
-  }
-
-  Account.register(email, password, firstName, lastName, nickName);
-  res.json(200, {"message":"OK"});
-});
-
-app.get('/account/authenticated', function(req, res) {
-  if ( req.session.loggedIn ) {
-    res.send(200);
-  } else {
-    res.send(401);
-  }
-});
-
-app.post('/forgotpassword', function(req, res) {
-  var hostname = req.headers.host;
-  var resetPasswordUrl = 'http://' + hostname + '/resetPassword';
-  var email = req.param('email', null);
-  if ( null == email || email.length < 1 ) {
-    res.send(400);
-    return;
-  }
-
-  Account.forgotPassword(email, resetPasswordUrl, function(success){
-    if (success) {
-      res.json(200, {"message":"OK"});
-    } else {
-      // Username or password not found
-      res.json(404, {"message":"user doesn't exist"});
-    }
-  });
-});
-
-app.get('/resetPassword', function(req, res) {
-  var accountId = req.param('account', null);
-  res.render('resetPassword.jade', {locals:{accountId:accountId}});
-});
-
-app.post('/resetPassword', function(req, res) {
-  var accountId = req.param('accountId', null);
-  var password = req.param('password', null);
-  if ( null != accountId && null != password ) {
-    Account.changePassword(accountId, password);
-  }
-  res.render('resetPasswordSuccess.jade');
-});
-
-app.listen(8080);
-console.log("App is listening to port 8080.");
+app.listen(port);
+console.log('listening on port ' + port);
