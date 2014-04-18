@@ -18,6 +18,7 @@ exports.getUsers = function(req, res) {
 exports.getUserById = function(req, res) {
   return User.findById(req.params.id, function (err, user) {
     if (err) {
+      res.json(404, {"message":"no such user"});
       return console.log(err);
     } else {
       return res.send(user);
