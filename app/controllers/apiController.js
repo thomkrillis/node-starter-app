@@ -9,6 +9,14 @@ exports.getUsers = function(req, res) {
     if (err) {
       return console.log(err);
     } else {
+      req.query.perpage = req.query.perpage ? req.query.perpage : Infinity;
+      req.query.page = req.query.page ? req.query.page : 1;
+      first = req.query.perpage * (req.query.page - 1);
+      first = isNaN(first) ? 0 : first;
+      first = first >= users.length ? 
+            (users.length - req.query.perpage <= 0 ? 
+            0 :users.length - req.query.perpage) : first;
+      users = users.slice(first,first + req.query.perpage);
       return res.send(users);
     }
   });
