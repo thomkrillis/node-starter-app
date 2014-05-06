@@ -1,4 +1,8 @@
 var express = require('express'),
+    morgan = require('morgan'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    expressSession = require('express-session'),
     app = express(),
     secrets = require('./config/secrets.js'),
     port = secrets.port,
@@ -12,18 +16,14 @@ mongoose.connect(secrets.db);
 
 require('./lib/passport')(passport);
 
-app.configure(function() {
-  app.use(express.logger('dev'));
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.session({ secret: secrets.sessionSecret }));
-  app.use(express.json());
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.set('view engine', 'ejs');
-  app.use(flash());
-  app.use(app.router);
-});
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(expressSession({ secret: secrets.sessionSecret }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.set('view engine', 'ejs');
+app.use(flash());
 
 require('./app/routes/api')(app, passport);
 require('./app/routes/client')(app, passport);
