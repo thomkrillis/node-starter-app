@@ -2,37 +2,39 @@ var apiController = require('../controllers/apiController');
  
 module.exports = function(app, passport) {
 
-  app.get('/api/v1/users', apiController.getUsers);  
+  app.route('/api/v1/users')
+    .get(apiController.getUsers)
+    .post(apiController.postUsers);
 
-  app.get('/api/v1/users/:id', apiController.getUserById);
+  app.route('/api/v1/users/:id')
+    .get(apiController.getUserById)
+    .put(apiController.putUserById)
+    .delete(apiController.deleteUserById);
 
-  app.post('/api/v1/users', apiController.postUsers);
 
-  app.put('/api/v1/users/:id', apiController.putUserById);
 
-//  app.post('/api/v1/login', apiController.postLogin);
+//  app.route('/api/v1/login')
+//    .post(apiController.postLogin);
 
-//  app.post('/api/v1/oauth', apiController.postOAuth);
+//  app.route('/api/v1/logout')
+//    .post(apiController.postLogout); 
 
-//  app.post('/api/v1/resetpassword', apiController.postResetPassword);
+//  app.route('/api/v1/oauth2/login')
+//    .get(apiController.getOAuth);
+//    .post(apiController.postOAuth);
 
-//  app.post('/api/v1/resetpassword/:id', apiController.postResetPasswordForId);
+//  app.route('/api/v1/oauth2/code')
+//    .get(apiController.getOAuthCode);
 
-//  app.post('/api/v1/confirmuser', apiController.postConfirm);
+//  app.route('/api/v1/users/:id/providers')
+//    .get(apiController.getProviders);
 
-//  app.post('/api/v1/confirmuser/:id', apiController.postConfirmById);
- 
-  app.delete('/api/v1/users/:id', apiController.deleteUserById);
+//  app.route('/api/v1/users/:id/providers/:index')
+//    .get(apiController.getProviderIndex);
+//    .delete(apiController.deleteProvider);
 
-//  app.post('/api/v1/logout', apiController.postLogout); 
+//  app.route('/api/v1/oauth2/link')
+//    .get(apiController.getOAuthLink);
 
-//  app.get('/api/v1/unlink/local', apiController.getUnlinkLocal);
-
-  
-  // TODO: unlink facebook auth
-  
-  // TODO: unlink google auth
-  
-  // TODO: unlink twitter auth
 
 };

@@ -22,18 +22,6 @@ exports.getUsers = function(req, res) {
   });
 };
 
-// GET - lists user with specific id
-exports.getUserById = function(req, res) {
-  return User.findById(req.params.id, function (err, user) {
-    if (err) {
-      res.json(404, {"message":"no such user"});
-      return console.log(err);
-    } else {
-      return res.send(user);
-    }
-  });
-};
-
 // POST - add new user
 exports.postUsers = passport.authenticate('local-signup', function(req, res) {
   var user;
@@ -53,6 +41,18 @@ exports.postUsers = passport.authenticate('local-signup', function(req, res) {
   return res.send(user);
 });
 
+// GET - lists user with specific id
+exports.getUserById = function(req, res) {
+  return User.findById(req.params.id, function (err, user) {
+    if (err) {
+      res.json(404, {"message":"no such user"});
+      return console.log(err);
+    } else {
+      return res.send(user);
+    }
+  });
+};
+
 // PUT - update user details
 exports.putUserById = passport.authenticate('local-signup', function(req, res) {
   return User.findById(req.params.id, function (err, user) {
@@ -68,41 +68,46 @@ exports.putUserById = passport.authenticate('local-signup', function(req, res) {
     });
   });
 });
-  
+
+// DELETE - delete user by id
+exports.deleteUserById = function (req, res) {
+  return User.findById(req.params.id, function (err, user) {
+    return user.remove(function (err) {
+      if (!err) {
+        console.log("removed successfully");
+        return res.send('');
+      } else {
+        console.log(err);
+      }
+    });
+  });
+};
+
+
 //  // POST - login user
 //  exports.postLogin = function(req, res) {};
 //  
-//  // POST - login user using oAuth
-//  exports.postOAuth = function(req, res) {};
-//  
-//  // POST - sends email to reset password
-//  exports.postResetPassword = function(req, res) {};
-//  
-//  // POST - resets the password
-//  exports.postResetPasswordForId = function(req, res) {};
-// 
-//  // POST - sends confirmation email
-//  exports.postConfirm = function(req, res) {};
-// 
-//  // POST - confirms user
-//  exports.postConfirmById = function(req, res) {};
-// 
-  // DELETE - delete user by id
-  exports.deleteUserById = function (req, res) {
-    return User.findById(req.params.id, function (err, user) {
-      return user.remove(function (err) {
-        if (!err) {
-          console.log("removed successfully");
-          return res.send('');
-        } else {
-          console.log(err);
-        }
-      });
-    });
-  };
-
-//  // GET - unlink user
-//  exports.getUnlinkLocal = function(req, res) {};
-//
 //  // POST - logout user
 //  exports.postLogout = function(req, res) {};
+//  
+//  // GET - login user using oAuth
+//  exports.getOAuth = function(req, res) {};
+//  
+//  // POST - direct login with token
+//  exports.postOAuth = function(req, res) {};
+//  
+//  // GET - oAuth redirection endpoint
+//  exports.getOAuthCode = function(req, res) {};
+//  
+//  // GET - list linked providers
+//  exports.getProviders = function(req, res) {};
+//  
+//  // GET - give info of a specific provider
+//  exports.getProviderIndex = function(req, res) {};
+//  
+//  // DELETE - unlink a provider
+//  exports.deleteProvider = function(req, res) {};
+//  
+//  // GET - link new provider to account
+//  exports.getOAuthLink = function(req, res) {};
+//  

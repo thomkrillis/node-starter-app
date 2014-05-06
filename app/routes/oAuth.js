@@ -3,16 +3,22 @@ var oAuthController = require('../controllers/oAuthController');
 
 module.exports = function(app, passport) {
   
-  app.get('/api/v1/auth/facebook', oAuthController.facebookAuth);
+  app.route('/api/v1/auth/facebook')
+    .get(oAuthController.facebookAuth);
 
-  app.get('/api/v1/auth/facebook/callback', oAuthController.facebookAuthCallback);
+  app.route('/api/v1/auth/facebook/callback')
+    .get(oAuthController.facebookAuthCallback);
 
-  app.get('/api/v1/auth/google', oAuthController.googleAuth);
+  app.route('/api/v1/auth/google')
+    .get(oAuthController.googleAuth);
 
-  app.get('/api/v1/auth/google/callback', oAuthController.googleAuthCallback);
+  app.route('/api/v1/auth/google/callback')
+    .get(oAuthController.googleAuthCallback);
 
-  app.get('/api/v1/auth/twitter', oAuthController.twitterAuth);
+  app.route('/api/v1/auth/twitter')
+    .get(oAuthController.twitterAuth);
 
-  app.get('/api/v1/auth/twitter/callback', oAuthController.twitterAuthCallback);
+  app.route('/api/v1/auth/twitter/callback')
+    .get(oAuthController.twitterAuthCallback);
 
 };
