@@ -12,6 +12,8 @@ var express = require('express'),
     passport = require('passport'),
     flash = require('connect-flash');
 
+module.exports = app;
+
 mongoose.connect(secrets.db);
 
 require('./lib/passport')(passport);

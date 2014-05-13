@@ -8,20 +8,45 @@
   <div id="mocha"></div>
   <script src="../node_modules/mocha/mocha.js"></script>
   <script src="../node_modules/chai/chai.js"></script>
-
+<!--
+  <script src="../node_modules/requirejs/require.js"></script>
+-->
   <script>
     mocha.setup('bdd')
     mocha.reporter('html');
   </script>
 
   <!-- Tests -->
-  <script></script>
+  <script src="models.js"></script>
+  <script src="routes.js"></script>
 
+  <script>
+/*    require.config({
+      baseUrl: '../app',
+      paths: {
+        'app': '../app',
+        'chai': '../node_modules/chai',
+        'request': '../node_modules/supertest',
+        'User': '../app/models/User'
+      }
+    });
+*/
+//    require(['models.js','routes.js'], function() {
+      if (window.mochaPhantomJS) {
+        mochaPhantomJS.run();
+      } else {
+        mocha.run();
+      }
+//    });
+  </script>
+
+<!--
   <script>
     // Only tests run in real browser, injected script run if options.run == true
     if (navigator.userAgent.indexOf('PhantomJS') < 0) {
       mocha.run();
     }
   </script>
+-->
 </body>
 </html>
