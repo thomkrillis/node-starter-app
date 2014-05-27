@@ -14,14 +14,7 @@
     mocha.reporter('html');
   </script>
 
-  <!-- Tests -->
-  <script></script>
+  <script data-main="test.config.js" src="../node_modules/requirejs/require.js"></script>
 
-  <script>
-    // Only tests run in real browser, injected script run if options.run == true
-    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
-      mocha.run();
-    }
-  </script>
 </body>
 </html>

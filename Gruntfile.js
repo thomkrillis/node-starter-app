@@ -1,18 +1,20 @@
 module.exports = function(grunt){
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    
-    mocha: {
-      all: {
-        src: ['test/testrunner.html'],
-      },
-      options: {
-        run: true
-      }
-    }
-  });
-  grunt.loadNpmTasks('grunt-mocha');
 
-  grunt.registerTask('default', ['mocha']);
+    pkg: grunt.file.readJSON('package.json'),
+
+    connect: {
+      server: {
+        options: {
+          port: 3000,
+          base: '',
+          keepalive: true,
+        },
+      },
+    },
+  });
+  grunt.loadNpmTasks('grunt-contrib-connect');
+
+  grunt.registerTask('default', ['connect']);
 };
 
